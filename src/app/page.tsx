@@ -1,9 +1,9 @@
 "use client"
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect} from "react"
 
 export default function Home() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
   
   const backgroundImages = [
     '/background1.jpg',
@@ -13,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsTransitioning(true);
+      setIsTransitioning(true)
       
       setTimeout(() => {
         setCurrentImageIndex((prevIndex) => 
@@ -23,8 +23,10 @@ export default function Home() {
       }, 1000)//Transition duration
     }, 5000)//Change image every 5 seconds
 
-    return () => clearInterval(interval);
-  }, [backgroundImages.length]);
+    return () => clearInterval(interval)
+  }, [backgroundImages.length])
+
+
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
@@ -42,8 +44,7 @@ export default function Home() {
         ))}
       </div>
       
-      <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">
-        
+      <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold">Login</h1>
             <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username"/>
