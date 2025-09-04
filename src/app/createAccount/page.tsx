@@ -1,6 +1,5 @@
 "use client"
 import React, { useState, useEffect} from "react"
-import CreateAccountHelper from './createAccountHelper'
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
