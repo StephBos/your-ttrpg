@@ -49,6 +49,27 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [backgroundImages.length])
 
+  async function validateEmail(newEmail: string, emailFunction: any, confirmEmailBool: boolean) {
+    if(validator.isEmail(email)){
+      if(!confirmEmailBool){
+        emailFunction({valid: true, error: ""})
+        if(newEmail == confirmEmail){
+          setConfirmEmailGood({valid: true, error: ""})
+        }
+      } else {
+        if(newEmail == confirmEmail){
+          emailFunction({valid: true, error: ""})
+        } else if(newEmail == email){ 
+          emailFunction({valid: true, error: ""})
+        }else {
+          emailFunction({valid: false, error: "Emails do not match"})
+        }
+      }
+    } else {
+      emailFunction({valid: false, error: "Invalid email"})
+    }
+  }
+
   async function validateUsername(username: string): Promise<boolean> {
     console.log('checking if username exists')
     try {
@@ -62,23 +83,6 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching users:', error)
       return false
-    }
-  }
-
-  async function validateEmail(email: string, isConfirmEmail: boolean) {
-    console.log('Validating email')
-    if (validator.isEmail(email)) {
-      if (isConfirmEmail) {
-        if (email === confirmEmail) {
-          setConfirmEmailGood({valid: true, error: ""})
-        } else {
-          setConfirmEmailGood({valid: false, error: "Emails do not match"})
-        }
-      } else  {
-        setEmailGood({valid: true, error: ""})
-      }
-    } else {
-      setEmailGood({valid: false, error: "Invalid email"})
     }
   }
 
@@ -114,13 +118,23 @@ export default function Home() {
         <form action="submit" className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold">Create Account</h1>
             <input type="text" name="email" className="bg-gray-800 rounded p-1 w-64" placeholder="Email" onChange={(e) => {
-              validateEmail(e.target.value, false)
+              validateEmail(e.target.value, setEmailGood, false)
               setEmail(e.target.value)
             }}/>
+            {!emailGood.valid && emailGood.error && ( 
+              <ul className="list-disc list-inside text-red-400 text-sm mt-1">
+                <li>{emailGood.error}</li>
+              </ul>
+            )}
             <input type="text" name="confirmEmail" className="bg-gray-800 rounded p-1 w-64" placeholder="Confirm Email" onChange={(e) => {
-              validateEmail(e.target.value, true)
+              validateEmail(e.target.value, setConfirmEmailGood, true)
               setConfirmEmail(e.target.value)
             }}/>
+            {!confirmEmailGood.valid && confirmEmailGood.error && ( 
+              <ul className="list-disc list-inside text-red-400 text-sm mt-1">
+                <li>{confirmEmailGood.error}</li>
+              </ul>
+            )}
             <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username" onChange={(e) => {
               validateUsername(e.target.value)
               setUsername(e.target.value)
