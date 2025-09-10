@@ -9,8 +9,8 @@ export default function Home() {
   const [emailGood, setEmailGood] = useState({valid: false, error: ""})
   const [confirmEmailGood, setConfirmEmailGood] = useState({valid: false, error: ""})
   const [usernameGood, setUsernameGood] = useState([{valid: false, error: ""}])
-  const [passwordGood, setPasswordGood] = useState({valid: false, error: ""})
-  const [confirmPasswordGood, setConfirmPasswordGood] = useState({valid: false, error: ""})
+  const [passwordGood, setPasswordGood] = useState([{valid: false, error: ""}])
+  const [confirmPasswordGood, setConfirmPasswordGood] = useState([{valid: false, error: ""}])
   const [email, setEmail] = useState("")
   const [confirmEmail, setConfirmEmail] = useState("")
   const [username, setUsername] = useState("")
@@ -46,9 +46,6 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [backgroundImages.length])
   
-
-  
-
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
       <div className="absolute inset-0 w-full h-full">
@@ -91,8 +88,8 @@ export default function Home() {
                 <li>{confirmEmailGood.error}</li>
               </ul>
             )}
-            <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username" onChange={(e) => {
-              validateUsername(e.target.value).then((results) => {
+            <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username" onChange={async (e) => {
+              await validateUsername(e.target.value).then((results) => {
                 setUsernameGood(results)
               })
               setUsername(e.target.value)
@@ -105,15 +102,31 @@ export default function Home() {
               </ul>
             )}
             <input type="text" name="password" className="bg-gray-800 rounded p-1 w-64" placeholder="Password" onChange={async (e) => {
-              const result = await validatePassword(e.target.value, false)
-              setPasswordGood(result[0])
+              await validatePassword(e.target.value, password, false).then((results) => {
+                setPasswordGood(results)
+              })
               setPassword(e.target.value)
             }}/>
+            {passwordGood.length > 0 && passwordGood[0].error && (
+              <ul className="mt-2 text-red-600 list-disc list-inside whitespace-pre-line">
+                {passwordGood.map((error, index) => (
+                  <li key={index}>{error.error}</li>
+                ))}
+              </ul>
+            )}
             <input type="text" name="confirmPassword" className="bg-gray-800 rounded p-1 w-64" placeholder="Confirm Password" onChange={async (e) => {
-              const result = await validatePassword(e.target.value, true)
-              setConfirmPasswordGood(result[0])
+              await validatePassword(e.target.value, password, true).then((results) => {
+                setConfirmPasswordGood(results)
+              })
               setConfirmPassword(e.target.value)
              }} />
+             {confirmPasswordGood.length > 0 && confirmPasswordGood[0].error && (
+               <ul className="mt-2 text-red-600 list-disc list-inside whitespace-pre-line">
+                 {confirmPasswordGood.map((error, index) => (
+                   <li key={index}>{error.error}</li>
+                 ))}
+               </ul>
+             )}
             <button className="bg-indigo-950 hover:bg-indigo-900 w-64 rounded disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed" 
               disabled={buttonDisabled} onClick={handleSubmit}>
                 Create Account

@@ -79,9 +79,60 @@ export function validateEmail(newEmail: string, confirmEmail: string, isConfirmF
   return { valid: true, error: "" }
 }
 
-export async function validatePassword(password: string, isConfirmPassword: boolean): Promise<ValidationResult[]> {
-    console.log('Validating password')
-    return [{valid: false, error: ""}]
+export async function validatePassword(newPassword: string, topPassword: string, isConfirmPassword: boolean): Promise<ValidationResult[]> {
+  // If this is confirm password validation, only check if passwords match
+  if (isConfirmPassword) {
+    if (newPassword !== topPassword) {
+      return [{valid: false, error: "Passwords do not match"}]
+    } else {
+      return [{valid: true, error: ""}]
+    }
+  }
+
+  // Regular password validation
+  const schema = new PasswordValidator()
+  schema
+  .is().min(8)                                    // Minimum length 8
+  .is().max(20)                                   // Maximum length 20
+  .has().uppercase()                              // Must have uppercase letters
+  .has().lowercase()                              // Must have lowercase letters
+  .has().digits(1)                                // Must have at least 2 digits
+  .has().not().spaces()                           // Should not have spaces
+  .is().not().oneOf(["Passw0rd", "Password123"])
+   
+  const errors = schema.validate(newPassword, {list: true}) as string[]
+  const result: ValidationResult[] = []
+  for(const error of errors){
+    switch (error){
+        case "min":
+          result.push({valid: false, error: "Be at least 8 characters long"})
+          break
+        case "max":
+          result.push({valid: false, error: "Be less than 20 characters"})
+          break
+        case "uppercase":
+          result.push({valid: false, error: "Contain at least one uppercase letter"})
+          break
+        case "lowercase":
+          result.push({valid: false, error: "Contain at least one lowercase letter"})
+          break
+        case "digits":
+          result.push({valid: false, error: "Have at least one digit"})
+          break
+        case "spaces":
+          result.push({valid: false, error: "Cannot have any spaces"})
+          break
+        case "oneOf":
+          result.push({valid: false, error: "This password is not secure please choose another"})
+          break
+    }
+  }
+  
+  if(errors.length < 1) {
+    return ([{valid: true, error: ""}])
+  } else {
+    return result
+  }
 }
 
 export async function handleSubmit(e: React.FormEvent) {
