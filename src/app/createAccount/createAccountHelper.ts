@@ -50,7 +50,7 @@ export async function validateUsername(username: string): Promise <ValidationRes
           errors.push({valid: false, error: "This username is not allowed."})
         }
 
-        if(errors < 0){
+        if(errors < 1){
           return [{valid: true, error: ""}]
         } else {
           return errors
@@ -135,9 +135,22 @@ export async function validatePassword(newPassword: string, topPassword: string,
   }
 }
 
-export async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    console.log('Creating account')
+export async function handleSubmit(e: React.FormEvent, username: string, email: string, password: string) {
+  e.preventDefault();
+
+  try {
+    const response = await fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    })
+
+    const data = await response.json()
+  } catch (error) {
+    console.error("Error creating user:", error)
+  }
 }
 
 

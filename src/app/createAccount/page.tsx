@@ -24,7 +24,7 @@ export default function Home() {
   ]
 
   useEffect(() => {
-    if (emailGood.valid && confirmEmailGood.valid && usernameGood[0].valid && passwordGood.valid && confirmPasswordGood.valid) {
+    if (emailGood.valid && confirmEmailGood.valid && usernameGood[0]?.valid && passwordGood[0]?.valid && confirmPasswordGood[0]?.valid) {
       setButtonDisabled(false)
     } else {
       setButtonDisabled(true)
