@@ -135,9 +135,7 @@ export async function validatePassword(newPassword: string, topPassword: string,
   }
 }
 
-export async function handleSubmit(e: React.FormEvent, username: string, email: string, password: string) {
-  e.preventDefault();
-
+export async function handleSubmit(username: string, email: string, password: string) {
   try {
     const response = await fetch("http://localhost:3000/users", {
       method: "POST",
