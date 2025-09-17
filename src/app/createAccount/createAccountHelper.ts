@@ -14,13 +14,13 @@ export async function validateUsername(username: string): Promise <ValidationRes
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
-        console.log('data.available', data.available)
+       
         //If username is not available
-        if(data.available) {
+        if(data.inUse) {
           console.log('username is already in use')
           errors.push({valid: false, error: "Username is already in use"})
         }
-        console.log('username', username)
+        
         //Only allowed characters
         if (!/^[a-zA-Z0-9_]+$/.test(username)) {
           console.log('Username may only contain letters, numbers, and underscores')
@@ -58,7 +58,8 @@ export async function validateUsername(username: string): Promise <ValidationRes
 
       } catch (error) {
         console.error('Error fetching users:', error)
-        throw new Error('Error fetching users', { cause: error })
+        // Return a validation error instead of throwing to prevent breaking the component
+        return [{ valid: false, error: "Unable to verify username availability. Please try again." }]
       }
     } else {
       return [{ valid: false, error: ""}]
@@ -135,7 +136,7 @@ export async function validatePassword(newPassword: string, topPassword: string,
   }
 }
 
-export async function handleSubmit(username: string, email: string, password: string) {
+export async function handleSubmit(username: string, email: string, password: string): Promise<void> {
   try {
     const response = await fetch("http://localhost:3000/users", {
       method: "POST",
@@ -145,9 +146,15 @@ export async function handleSubmit(username: string, email: string, password: st
       body: JSON.stringify({ username, email, password }),
     })
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
     const data = await response.json()
+    console.log("Account created successfully:", data)
   } catch (error) {
     console.error("Error creating user:", error)
+    throw error // Re-throw so the calling code can handle it
   }
 }
 

@@ -1,9 +1,12 @@
 "use client"
 import React, { useState, useEffect} from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { validateUsername, validateEmail, validatePassword, handleSubmit } from "./createAccountHelper"
 import { Eye, EyeOff } from "lucide-react"
 
 export default function Home() {
+  const router = useRouter()
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(true)
@@ -18,6 +21,8 @@ export default function Home() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false)
+  const [accountCreationMessage, setAccountCreationMessage] = useState("")
 
   const backgroundImages = [
     '/background1.jpg',
@@ -26,6 +31,7 @@ export default function Home() {
   ]
 
   useEffect(() => {
+    console.log('emailGood', emailGood, ' confirmEmailGood ', confirmEmailGood, ' usernameGood ', usernameGood, ' passwordGood ', passwordGood, ' confirmPasswordGood ', confirmPasswordGood)
     if (emailGood.valid && confirmEmailGood.valid && usernameGood[0]?.valid && passwordGood[0]?.valid && confirmPasswordGood[0]?.valid) {
       setButtonDisabled(false)
     } else {
@@ -91,9 +97,13 @@ export default function Home() {
               </ul>
             )}
             <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username" onChange={async (e) => {
-              await validateUsername(e.target.value).then((results) => {
+              try {
+                const results = await validateUsername(e.target.value)
                 setUsernameGood(results)
-              })
+              } catch (error) {
+                console.error('Username validation error:', error)
+                setUsernameGood([{ valid: false, error: "Unable to validate username. Please try again." }])
+              }
               setUsername(e.target.value)
             }}/>
             {usernameGood.length > 0 && usernameGood[0].error && (
@@ -106,9 +116,13 @@ export default function Home() {
             {/*-------Password------*/}
             <div className='relative w-64'>
               <input type={showPassword ? "text" : "password"} name="password" className="bg-gray-800 rounded p-1 w-64" placeholder="Password" onChange={async (e) => {
-                await validatePassword(e.target.value, password, false).then((results) => {
+                try {
+                  const results = await validatePassword(e.target.value, password, false)
                   setPasswordGood(results)
-                })
+                } catch (error) {
+                  console.error('Password validation error:', error)
+                  setPasswordGood([{ valid: false, error: "Unable to validate password. Please try again." }])
+                }
                 setPassword(e.target.value)
               }}/>
               <button
@@ -129,9 +143,13 @@ export default function Home() {
             {/*-----ConfirmPassword----*/}
             <div className='relative w-64'>
               <input type={showPassword ? "text" : "password"} name="confirmPassword" className="bg-gray-800 rounded p-1 w-64" placeholder="Confirm Password" onChange={async (e) => {
-                await validatePassword(e.target.value, password, true).then((results) => {
+                try {
+                  const results = await validatePassword(e.target.value, password, true)
                   setConfirmPasswordGood(results)
-                })
+                } catch (error) {
+                  console.error('Confirm password validation error:', error)
+                  setConfirmPasswordGood([{ valid: false, error: "Unable to validate password. Please try again." }])
+                }
                 setConfirmPassword(e.target.value)
               }} />
                 <button
@@ -151,9 +169,39 @@ export default function Home() {
              )}
              {/*-----Submit Button-----*/}
             <button type="button" className="bg-indigo-950 hover:bg-indigo-900 w-64 rounded disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed" 
-              disabled={buttonDisabled} onClick={() => handleSubmit(username, email, password)}>
-                Create Account
+              disabled={buttonDisabled || isCreatingAccount} onClick={async () => {
+                setIsCreatingAccount(true)
+                setAccountCreationMessage("")
+                
+                try {
+                  await handleSubmit(username, email, password)
+                  setAccountCreationMessage("Account created successfully! Redirecting...")
+                  
+                  // Small delay to show success message before redirecting
+                  setTimeout(() => {
+                    router.push(`/${username}`)
+                  }, 1000)
+                } catch (error) {
+                  console.error('Account creation failed:', error)
+                  setAccountCreationMessage("Failed to create account. Please try again.")
+                } finally {
+                  setIsCreatingAccount(false)
+                }
+              }}>
+                {isCreatingAccount ? "Creating Account..." : "Create Account"}
             </button>
+            
+            {/* Account creation status message */}
+            {accountCreationMessage && (
+              <div className={`text-sm text-center p-2 rounded ${
+                accountCreationMessage.includes("successfully") 
+                  ? "text-green-400 bg-green-900/20" 
+                  : "text-red-400 bg-red-900/20"
+              }`}>
+                {accountCreationMessage}
+              </div>
+            )}
+            
             <a className="text-sm text-gray-400 hover:text-gray-300" href="/forgotPassword">Forgot your password?</a>
             <a className="text-sm text-gray-400 hover:text-gray-300" href="/">Already have an Account? Login</a>
         </form>
