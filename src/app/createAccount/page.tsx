@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect} from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { validateUsername, validateEmail, validatePassword, handleSubmit } from "./createAccountHelper"
 import { Eye, EyeOff } from "lucide-react"
 
@@ -23,6 +22,7 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false)
   const [isCreatingAccount, setIsCreatingAccount] = useState(false)
   const [accountCreationMessage, setAccountCreationMessage] = useState("")
+  const [modalOpen, setModalOpen] = useState(false)
 
   const backgroundImages = [
     '/background1.jpg',
@@ -31,7 +31,6 @@ export default function Home() {
   ]
 
   useEffect(() => {
-    console.log('emailGood', emailGood, ' confirmEmailGood ', confirmEmailGood, ' usernameGood ', usernameGood, ' passwordGood ', passwordGood, ' confirmPasswordGood ', confirmPasswordGood)
     if (emailGood.valid && confirmEmailGood.valid && usernameGood[0]?.valid && passwordGood[0]?.valid && confirmPasswordGood[0]?.valid) {
       setButtonDisabled(false)
     } else {
@@ -73,6 +72,7 @@ export default function Home() {
       <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold">Create Account</h1>
+            {/*-------Email------*/}
             <input type="text" name="email" className="bg-gray-800 rounded p-1 w-64" placeholder="Email" onChange={(e) => {
               const result = validateEmail(e.target.value, confirmEmail, false)
               setEmailGood(result)
@@ -86,6 +86,7 @@ export default function Home() {
                 <li>{emailGood.error}</li>
               </ul>
             )}
+            {/*-------Confirm Email------*/}
             <input type="text" name="confirmEmail" className="bg-gray-800 rounded p-1 w-64" placeholder="Confirm Email" onChange={(e) => {
               const result = validateEmail(e.target.value, email, true)
               setConfirmEmailGood(result)
@@ -96,6 +97,7 @@ export default function Home() {
                 <li>{confirmEmailGood.error}</li>
               </ul>
             )}
+            {/*-------username------*/}
             <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username" onChange={async (e) => {
               try {
                 const results = await validateUsername(e.target.value)
@@ -174,15 +176,19 @@ export default function Home() {
                 setAccountCreationMessage("")
                 
                 try {
-                  await handleSubmit(username, email, password)
-                  setAccountCreationMessage("Account created successfully! Redirecting...")
-                  
-                  // Small delay to show success message before redirecting
-                  setTimeout(() => {
-                    router.push(`/${username}`)
-                  }, 1000)
-                } catch (error) {
-                  console.error('Account creation failed:', error)
+                  const result = await handleSubmit(username, email, password)
+
+                  if(result.success){
+                    setAccountCreationMessage("Account created successfully! Redirecting...")
+                    // Small delay to show success message before redirecting
+                    setTimeout(() => {
+                      router.push(`/${username}`)
+                    }, 1000)
+                  } else if(result.error == 'Email already in use'){
+                    setModalOpen(true)
+                  }
+
+                } catch (error: any) {
                   setAccountCreationMessage("Failed to create account. Please try again.")
                 } finally {
                   setIsCreatingAccount(false)
@@ -193,7 +199,7 @@ export default function Home() {
             
             {/* Account creation status message */}
             {accountCreationMessage && (
-              <div className={`text-sm text-center p-2 rounded ${
+              <div className={`text-sm text-center p-2 rounded w-64 ${
                 accountCreationMessage.includes("successfully") 
                   ? "text-green-400 bg-green-900/20" 
                   : "text-red-400 bg-red-900/20"
@@ -206,6 +212,31 @@ export default function Home() {
             <a className="text-sm text-gray-400 hover:text-gray-300" href="/">Already have an Account? Login</a>
         </form>
       </main>
+      {/* Email in use Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div className="bg-gray-700 relative rounded-lg p-6 max-w-sm w-full text-center">
+          <button
+            onClick={() => setModalOpen(false)}
+            className="absolute top-2 right-2 text-gray-200 hover:text-white text-xl"
+          >
+            &#10005;
+          </button>
+      
+          <h2 className="text-lg font-bold mb-2">Email Already in Use</h2>
+          <p className="mb-4">Please Login</p>
+      
+          <div className="flex justify-center">
+            <button
+              className="bg-indigo-950 hover:bg-indigo-900 w-40 rounded py-2"
+              onClick={() => router.push("/")}
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      </div>
+      )}
     </div>
   );
 }

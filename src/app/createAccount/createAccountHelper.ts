@@ -2,8 +2,13 @@ import validator from "validator"
 import PasswordValidator from "password-validator"
 import { ValidationResult } from "@/types/global"
 
+type SignupResponse = {
+  success: boolean
+  user?: { id: number, username: string, email: string } // optional, returned on success
+  error?: string // optional, returned on failure
+}
+
 export async function validateUsername(username: string): Promise <ValidationResult[]>{
-    console.log('checking if username exists')
     if(username) {
       try {
         const errors: any = []
@@ -46,7 +51,6 @@ export async function validateUsername(username: string): Promise <ValidationRes
         //No reserverd words
         const reserved = ["admin", "root", "support", "system"];
         if (reserved.includes(username.toLowerCase())) {
-          console.log('this username is not allowed')
           errors.push({valid: false, error: "This username is not allowed."})
         }
 
@@ -136,25 +140,29 @@ export async function validatePassword(newPassword: string, topPassword: string,
   }
 }
 
-export async function handleSubmit(username: string, email: string, password: string): Promise<void> {
+export async function handleSubmit(
+  username: string,
+  email: string,
+  password: string
+): Promise<SignupResponse> {
   try {
     const response = await fetch("http://localhost:3000/users", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
     })
 
+    const data = await response.json()
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      return { success: false, error: data.error || `HTTP error: ${response.status}` }
     }
 
-    const data = await response.json()
-    console.log("Account created successfully:", data)
-  } catch (error) {
-    console.error("Error creating user:", error)
-    throw error // Re-throw so the calling code can handle it
+    return { success: true, user: data.user }
+  } catch (err: any) {
+    console.log('CATCHING')
+    console.error("Error creating user:", err)
+    return { success: false, error: err.message || "Unknown error" }
   }
 }
 
