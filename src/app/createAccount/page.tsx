@@ -3,6 +3,7 @@ import React, { useState, useEffect} from "react"
 import { useRouter } from "next/navigation"
 import { validateUsername, validateEmail, validatePassword, handleSubmit } from "./createAccountHelper"
 import { Eye, EyeOff } from "lucide-react"
+import Link from "next/link"
 
 export default function Home() {
   const router = useRouter()
@@ -18,7 +19,6 @@ export default function Home() {
   const [confirmEmail, setConfirmEmail] = useState("")
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isCreatingAccount, setIsCreatingAccount] = useState(false)
   const [accountCreationMessage, setAccountCreationMessage] = useState("")
@@ -152,7 +152,6 @@ export default function Home() {
                   console.error('Confirm password validation error:', error)
                   setConfirmPasswordGood([{ valid: false, error: "Unable to validate password. Please try again." }])
                 }
-                setConfirmPassword(e.target.value)
               }} />
                 <button
                   type="button"
@@ -208,8 +207,8 @@ export default function Home() {
               </div>
             )}
             
-            <a className="text-sm text-gray-400 hover:text-gray-300" href="/forgotPassword">Forgot your password?</a>
-            <a className="text-sm text-gray-400 hover:text-gray-300" href="/">Already have an Account? Login</a>
+            <Link className="text-sm text-gray-400 hover:text-gray-300" href="/forgotPassword">Forgot your password?</Link>
+            <Link className="text-sm text-gray-400 hover:text-gray-300" href="/">Already have an Account? Login</Link>
         </form>
       </main>
       {/* Email in use Modal */}
