@@ -81,7 +81,7 @@ export default function Home() {
       <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">
             <h1 className="text-3xl font-bold">Login</h1>
-            <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username" onChange={
+            <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username or Email" onChange={
               (e) => setUsernameOrEmail(e.target.value)}/>
             <div className='relative w-64'>
               <input type={showPassword ? "text" : "password"} name="password" className="bg-gray-800 rounded p-1 w-64" placeholder="Password" onChange={async (e) => {
