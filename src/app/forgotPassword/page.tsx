@@ -2,16 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff } from 'lucide-react'
 
 export default function Home() {
    const router = useRouter()
    const [currentImageIndex, setCurrentImageIndex] = useState(0)
    const [isTransitioning, setIsTransitioning] = useState(false)
    const [usernameOrEmail, setUsernameOrEmail] = useState('')
-   const [password, setPassword] = useState('')
    const [loading, setLoading] = useState(false)
-   const [errors, setErrors] = useState('')
+   const [message, setMessage] = useState('')
 
    const backgroundImages = [
       '/background1.jpg',
@@ -34,27 +32,30 @@ export default function Home() {
       return () => clearInterval(interval)
    }, [backgroundImages.length])
 
-   async function login(e: any): Promise<void> {
+   async function resetPassword(e: any): Promise<void> {
       e.preventDefault()
       setLoading(true)
 
-      const response = await fetch('http://localhost:3000/users/login', {
+      const response = await fetch('http://localhost:3000/users/resetRequest', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',
          },
          body: JSON.stringify({
-            usernameOrEmail,
-            password,
+            usernameOrEmail
          }),
       })
+      
       const data = await response.json()
       console.log(data)
 
-      if (data.valid && data.username) {
-         router.push(`/${data.username}`)
+      if (data.valid) {
+         setMessage(data.message)
+         setTimeout(() => {
+                      router.push(``)
+                    }, 1000)
       } else {
-         setErrors(data.message)
+         setMessage(data.message)
       }
 
       setLoading(false)
@@ -88,15 +89,19 @@ export default function Home() {
                />
                <button
                   className="bg-indigo-950 hover:bg-indigo-900 w-64 rounded mb-4"
-                  onClick={(e) => login(e)}
+                  onClick={(e) => resetPassword(e)}
                >
                   Reset Password
                </button>
-               {errors && (
-                  <ul className="list-disc list-inside text-red-400 text-sm mt-1">
-                     <li>{errors}</li>
-                  </ul>
-               )}
+               {message && (
+              <div className={`text-sm text-center p-2 rounded w-64 ${
+                message.includes("successful") 
+                  ? "text-green-400 bg-green-900/20" 
+                  : "text-red-400 bg-red-900/20"
+              }`}>
+                {message}
+              </div>
+            )}
                <Link
                   className="text-sm text-gray-400 hover:text-gray-300"
                   href="/"
