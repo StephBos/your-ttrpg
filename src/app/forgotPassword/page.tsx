@@ -33,6 +33,7 @@ export default function Home() {
    }, [backgroundImages.length])
 
    async function resetPassword(e: any): Promise<void> {
+      console.log('Resetting password for:', usernameOrEmail)
       e.preventDefault()
       setLoading(true)
 
@@ -47,7 +48,6 @@ export default function Home() {
       })
       
       const data = await response.json()
-      console.log(data)
 
       if (data.valid) {
          setMessage(data.message)
@@ -95,7 +95,7 @@ export default function Home() {
                </button>
                {message && (
               <div className={`text-sm text-center p-2 rounded w-64 ${
-                message.includes("successful") 
+                message.includes("exists") 
                   ? "text-green-400 bg-green-900/20" 
                   : "text-red-400 bg-red-900/20"
               }`}>

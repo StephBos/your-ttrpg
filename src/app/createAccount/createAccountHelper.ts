@@ -48,7 +48,7 @@ export async function validateUsername(username: string): Promise <ValidationRes
           errors.push({valid: false, error: "Username must be between 3\nand 20 characters."})
         }
 
-        //No reserverd words
+        //No reserved words
         const reserved = ["admin", "root", "support", "system"];
         if (reserved.includes(username.toLowerCase())) {
           errors.push({valid: false, error: "This username is not allowed."})
