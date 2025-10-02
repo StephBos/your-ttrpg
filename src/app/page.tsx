@@ -3,6 +3,7 @@ import React, { useState, useEffect} from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
+import Background from "../Components/Background"
 
 
 export default function Home() {
@@ -64,19 +65,7 @@ export default function Home() {
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
-      <div className="absolute inset-0 w-full h-full">
-        {backgroundImages.map((image, index) => (
-          <div
-            key={image}
-            className={`absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-1200 ease-in-out ${
-              index === currentImageIndex && !isTransitioning
-                ? 'opacity-100'
-                : 'opacity-0'
-            }`}
-            style={{ backgroundImage: `url('${image}')` }}
-          />
-        ))}
-      </div>
+      <Background images={backgroundImages} />
       
       <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">
