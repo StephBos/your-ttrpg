@@ -4,7 +4,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
 import Background from "../Components/Background"
+import { Metal_Mania } from 'next/font/google'
 
+ const metalMania = Metal_Mania({ subsets: ['latin'], weight: '400' })
 
 export default function Home() {
   const router = useRouter()
@@ -69,7 +71,7 @@ export default function Home() {
       
       <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">
-            <h1 className="text-3xl font-bold">Login</h1>
+            <h1 className={`text-4xl font-bold text-amber-200 ${metalMania.className}`}>Login</h1>
             <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username or Email" onChange={
               (e) => setUsernameOrEmail(e.target.value)}/>
             <div className='relative w-64'>
@@ -84,7 +86,7 @@ export default function Home() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button> 
             </div>
-            <button className="bg-indigo-950 hover:bg-indigo-900 w-64 rounded" 
+            <button className={`bg-indigo-950 hover:bg-indigo-900 w-64 rounded text-lg text-amber-200 ${metalMania.className}`} 
               onClick={(e) => login(e)}>Login</button>
             {errors && ( 
               <ul className="list-disc list-inside text-red-400 text-sm mt-1">
