@@ -5,12 +5,14 @@ import FantasyPlusButton from '@/Components/PlusButton'
 import Background from '@/Components/Background'
 import { useState, useEffect } from 'react'
 import { Metal_Mania } from 'next/font/google'
+import CreateRulesetModal from '@/Components/createRulesetModal'
 
  const metalMania = Metal_Mania({ subsets: ['latin'], weight: '400' })
 
 export default function UserPage() {
    const [currentImageIndex, setCurrentImageIndex] = useState(0)
    const [isTransitioning, setIsTransitioning] = useState(false)
+   const [modalOpen, setModalOpen] = useState(false)
    const params = useParams<{ username: string }>()
    const username = params.username
 
@@ -48,11 +50,12 @@ export default function UserPage() {
          <main className="w-full sm:w-2/3 lg:w-1/2 flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded relative z-10">
             <h1 className={`text-4xl mb-3 text-amber-200 ${metalMania.className}`}>Your TTRPG Rulesets</h1>
             <FantasyPlusButton
-               onClick={() => alert('Plus button clicked!')}
+               onClick={() => setModalOpen(true)}
                size={80}
                title="Add New Item"
             />
          </main>
+         {modalOpen && (<CreateRulesetModal onClose={() => setModalOpen(false)} />)}
       </div>
    )
 }
