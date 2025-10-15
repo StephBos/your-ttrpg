@@ -4,4 +4,5 @@ export interface Ruleset {
    backgroundImage: File | null
    createdAt: string
    description: string
+   game: string
 }

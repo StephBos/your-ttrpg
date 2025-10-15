@@ -2,10 +2,10 @@ import React from 'react'
 import Dropzone from 'react-dropzone'
 import { Metal_Mania } from 'next/font/google'
 import { Upload } from 'lucide-react'
-
 interface Props {
    fileTypes?: string
    allowMultiple?: boolean
+   onFileUpload?: (files: File[]) => void
 }
 
 const metalMania = Metal_Mania({ subsets: ['latin'], weight: '400' })
@@ -13,6 +13,7 @@ const metalMania = Metal_Mania({ subsets: ['latin'], weight: '400' })
 export default function DragNDropFileUpload({
    fileTypes = 'image/*',
    allowMultiple = false,
+   onFileUpload
 }: Props) {
    const [message, setMessage] = React.useState(
       "Drag 'n' drop background image here, or click to select files"
@@ -25,9 +26,9 @@ export default function DragNDropFileUpload({
    }, [fileTypes])
 
    return (
-      <div className="bg-stone-700 rounded p-1 w-64 h-30 flex items-center justify-center text-center border-2 border-dashed border-gray-400 cursor-pointer hover:bg-stone-600">
+      <div className="bg-stone-700 rounded p-1 w-full h-30 flex items-center justify-center text-center border-2 border-dashed border-gray-400 cursor-pointer hover:bg-stone-600">
          <Dropzone
-            onDrop={(acceptedFiles) => console.log(acceptedFiles)}
+            onDrop={(acceptedFiles) => onFileUpload?.(acceptedFiles)}
             accept={{ [fileTypes]: [] }}
             multiple={allowMultiple}
          >
