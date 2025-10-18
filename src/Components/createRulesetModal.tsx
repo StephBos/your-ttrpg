@@ -4,6 +4,7 @@ import DragNDropFileUpload from './dropNDropFileUpload'
 import { Ruleset } from '@/types/ruleset'
 import { useParams } from 'next/navigation'
 import Dropdown from './dropdown'
+import { Trash } from 'lucide-react'
 
 interface CreateRulesetModalProps {
    onClose: () => void
@@ -16,26 +17,45 @@ export default function CreateRulesetModal({
 }: CreateRulesetModalProps) {
    const { username } = useParams()
    const [ruleset, setRuleset] = useState<Ruleset>({
-      user: username as string,
+      username: username as string,
       title: '',
       backgroundImage: null,
       createdAt: new Date().toLocaleDateString(),
       description: '',
-      game: ''
+      game: '',
    })
-   const [dropdownOpen, setDropdownOpen] = useState(false)
    const selectMessage = 'Select Game'
 
-   function handleSave() {
+   async function handleSave() {
       console.log('Saving ruleset:', ruleset)
+
+      const formData = new FormData()
+      formData.append('username', ruleset.username)
+      formData.append('title', ruleset.title)
+      formData.append('description', ruleset.description)
+      formData.append('game', ruleset.game)
+      formData.append('createdAt', ruleset.createdAt)
+
+      if (ruleset.backgroundImage) {
+         formData.append('backgroundImage', ruleset.backgroundImage)
+      }
+
+      try {
+         const response = await fetch('http://localhost:3000/rulesets', {
+            method: 'POST',
+            body: formData
+         })
+         console.log('Response status:', response.status)
+      } catch (error) {
+         console.error('Error saving ruleset:', error)
+      }
    }
 
    function handleFileUpload(files: File[]) {
-      console.log('handling file upload:', files)
       setRuleset({ ...ruleset, backgroundImage: files[0] })
    }
 
-    function handleSelect(selected: string | string[]) {
+   function handleSelect(selected: string | string[]) {
       console.log('Selected game:', selected)
       setRuleset({ ...ruleset, game: selected as string })
    }
@@ -73,11 +93,19 @@ export default function CreateRulesetModal({
                />
 
                {ruleset.backgroundImage ? (
-                  <img
-                     className="w-full h-30 object-cover rounded"
-                     src={URL.createObjectURL(ruleset.backgroundImage)}
-                     alt="Background Preview"
-                  />
+                  <div className="relative w-full">
+                     <img
+                        className="w-full h-30 object-cover rounded"
+                        src={URL.createObjectURL(ruleset.backgroundImage)}
+                        alt="Background Preview"
+                     />
+                     <Trash
+                        className="absolute top-2 right-2 text-stone-950 hover:text-black text-2xl cursor-pointer"
+                        onClick={() =>
+                           setRuleset({ ...ruleset, backgroundImage: null })
+                        }
+                     />
+                  </div>
                ) : (
                   <DragNDropFileUpload
                      fileTypes="image/*"
@@ -98,8 +126,11 @@ export default function CreateRulesetModal({
                   }}
                ></textarea>
 
-               <Dropdown options={['DND5e']} onSelect={handleSelect} selectMessage={selectMessage}/>
-
+               <Dropdown
+                  options={['DND5e']}
+                  onSelect={handleSelect}
+                  selectMessage={selectMessage}
+               />
             </form>
 
             {/* Save Button */}
@@ -108,7 +139,7 @@ export default function CreateRulesetModal({
                   className={`bg-[#d4b483] hover:bg-[#c2a473] text-black px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed 
                         rounded font-semibold shadow-md ${metalMania.className}`}
                   onClick={handleSave}
-                  disabled={!ruleset.title.trim()||!ruleset.game} // Disable if title is empty
+                  disabled={!ruleset.title.trim() || !ruleset.game} // Disable if title is empty
                >
                   Save
                </button>

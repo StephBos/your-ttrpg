@@ -1,5 +1,5 @@
 export interface Ruleset {
-   user: string
+   username: string
    title: string
    backgroundImage: File | null
    createdAt: string

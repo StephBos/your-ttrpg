@@ -69,9 +69,9 @@ export default function Home() {
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
       <Background images={backgroundImages} />
       
-      <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded gap-2 relative z-10">      
+      <main className="flex flex-col row-start-2 items-center sm:items-start bg-[#395144]/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">
-            <h1 className={`text-4xl font-bold text-amber-200 ${metalMania.className}`}>Login</h1>
+            <h1 className={`text-4xl font-bold text-[#AA8B56] ${metalMania.className}`}>Login</h1>
             <input type="text" name="username" className="bg-gray-800 rounded p-1 w-64" placeholder="Username or Email" onChange={
               (e) => setUsernameOrEmail(e.target.value)}/>
             <div className='relative w-64'>
@@ -86,7 +86,7 @@ export default function Home() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button> 
             </div>
-            <button className={`bg-indigo-950 hover:bg-indigo-900 w-64 rounded text-lg text-amber-200 ${metalMania.className}`} 
+            <button className={`bg-[#4E6C50] hover:bg-[#4C763B] w-64 rounded text-lg text-[#AA8B56] ${metalMania.className}`} 
               onClick={(e) => login(e)}>Login</button>
             {errors && ( 
               <ul className="list-disc list-inside text-red-400 text-sm mt-1">
