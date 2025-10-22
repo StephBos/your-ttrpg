@@ -5,5 +5,5 @@ export interface Ruleset {
    createdAt: string
    description: string
    game: string
-   location: string
+   url: string
 }
