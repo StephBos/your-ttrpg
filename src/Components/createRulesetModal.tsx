@@ -23,6 +23,7 @@ export default function CreateRulesetModal({
       createdAt: new Date().toLocaleDateString(),
       description: '',
       game: '',
+      url: ''
    })
    const selectMessage = 'Select Game'
 
@@ -35,6 +36,7 @@ export default function CreateRulesetModal({
       formData.append('description', ruleset.description)
       formData.append('game', ruleset.game)
       formData.append('createdAt', ruleset.createdAt)
+      formData.append('url', ruleset.url)
 
       if (ruleset.backgroundImage) {
          formData.append('backgroundImage', ruleset.backgroundImage)
@@ -45,7 +47,13 @@ export default function CreateRulesetModal({
             method: 'POST',
             body: formData
          })
-         console.log('Response status:', response.status)
+         
+         if (response.ok) {
+            //router.push()
+         }else {
+            console.error('Failed to save ruleset:', response.statusText)
+         }
+
       } catch (error) {
          console.error('Error saving ruleset:', error)
       }
@@ -88,7 +96,8 @@ export default function CreateRulesetModal({
                   className="bg-stone-700 rounded p-2 w-full placeholder-amber-100/50 text-amber-100"
                   placeholder="Title"
                   onChange={(e) =>
-                     setRuleset({ ...ruleset, title: e.target.value })
+                     //add title and generate url from title
+                     setRuleset({ ...ruleset, title: e.target.value, url: e.target.value.trim().toLowerCase().replace(/\s+/g, '')})
                   }
                />
 

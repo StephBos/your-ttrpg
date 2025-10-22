@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect} from 'react'
 import Dropzone from 'react-dropzone'
 import { Metal_Mania } from 'next/font/google'
 import { Upload } from 'lucide-react'
@@ -15,11 +15,11 @@ export default function DragNDropFileUpload({
    allowMultiple = false,
    onFileUpload
 }: Props) {
-   const [message, setMessage] = React.useState(
+   const [message, setMessage] = useState(
       "Drag 'n' drop background image here, or click to select files"
    )
 
-   React.useEffect(() => {
+   useEffect(() => {
       if (fileTypes && !fileTypes.includes('image')) {
          setMessage("Drag 'n' drop files here, or click to select files")
       }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
@@ -15,7 +15,7 @@ export default function Dropdown({
 }: Props) {
    const [selected, setSelected] = useState(selectMessage)
 
-   React.useEffect(() => {
+   useEffect(() => {
       setSelected(selectMessage)
    }, [selectMessage])
 
