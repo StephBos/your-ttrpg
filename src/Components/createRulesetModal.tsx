@@ -146,7 +146,7 @@ export default function CreateRulesetModal({
             <div className="w-full flex justify-center mt-4">
                <button
                   className={`bg-[#d4b483] hover:bg-[#c2a473] text-black px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed 
-                        rounded font-semibold shadow-md ${metalMania.className}`}
+                        rounded font-semibold shadow-md ${metalMania.className} cursor-pointer`}
                   onClick={handleSave}
                   disabled={!ruleset.title.trim() || !ruleset.game} // Disable if title is empty
                >
