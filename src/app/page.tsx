@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect} from "react"
+import React, { useState} from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
@@ -10,34 +10,11 @@ import { Metal_Mania } from 'next/font/google'
 
 export default function Home() {
   const router = useRouter()
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const [usernameOrEmail, setUsernameOrEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  
-  const backgroundImages = [
-    '/background1.jpg',
-    '/background2.jpg', 
-    '/background3.jpg'
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsTransitioning(true)
-      
-      setTimeout(() => {
-        setCurrentImageIndex((prevIndex) => 
-          (prevIndex + 1) % backgroundImages.length
-        );
-        setIsTransitioning(false);
-      }, 1000)//Transition duration
-    }, 5000)//Change image every 5 seconds
-
-    return () => clearInterval(interval)
-  }, [backgroundImages.length])
 
   async function login(e: any): Promise<void>{
     e.preventDefault()
@@ -67,7 +44,7 @@ export default function Home() {
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
-      <Background images={backgroundImages} />
+      <Background/>
       
       <main className="flex flex-col row-start-2 items-center sm:items-start bg-[#395144]/90 p-6 rounded gap-2 relative z-10">      
         <form action="submit" className="flex flex-col gap-2">

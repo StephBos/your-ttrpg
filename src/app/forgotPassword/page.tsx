@@ -6,32 +6,9 @@ import Background from '../../Components/Background'
 
 export default function Home() {
    const router = useRouter()
-   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-   const [isTransitioning, setIsTransitioning] = useState(false)
    const [usernameOrEmail, setUsernameOrEmail] = useState('')
    const [loading, setLoading] = useState(false)
    const [message, setMessage] = useState('')
-
-   const backgroundImages = [
-      '/background1.jpg',
-      '/background2.jpg',
-      '/background3.jpg',
-   ]
-
-   useEffect(() => {
-      const interval = setInterval(() => {
-         setIsTransitioning(true)
-
-         setTimeout(() => {
-            setCurrentImageIndex(
-               (prevIndex) => (prevIndex + 1) % backgroundImages.length
-            )
-            setIsTransitioning(false)
-         }, 1000) //Transition duration
-      }, 5000) //Change image every 5 seconds
-
-      return () => clearInterval(interval)
-   }, [backgroundImages.length])
 
    async function resetPassword(e: any): Promise<void> {
       console.log('Resetting password for:', usernameOrEmail)
@@ -44,17 +21,17 @@ export default function Home() {
             'Content-Type': 'application/json',
          },
          body: JSON.stringify({
-            usernameOrEmail
+            usernameOrEmail,
          }),
       })
-      
+
       const data = await response.json()
 
       if (data.valid) {
          setMessage(data.message)
          setTimeout(() => {
-                      router.push(``)
-                    }, 1000)
+            router.push(``)
+         }, 1000)
       } else {
          setMessage(data.message)
       }
@@ -64,7 +41,7 @@ export default function Home() {
 
    return (
       <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
-         <Background images={backgroundImages} />
+         <Background />
 
          <main className="flex flex-col row-start-2 items-center sm:items-start bg-gray-900/90 p-6 rounded relative z-10">
             <form action="submit" className="flex flex-col">
@@ -83,14 +60,16 @@ export default function Home() {
                   Reset Password
                </button>
                {message && (
-              <div className={`text-sm text-center p-2 rounded w-64 ${
-                message.includes("exists") 
-                  ? "text-green-400 bg-green-900/20" 
-                  : "text-red-400 bg-red-900/20"
-              }`}>
-                {message}
-              </div>
-            )}
+                  <div
+                     className={`text-sm text-center p-2 rounded w-64 ${
+                        message.includes('exists')
+                           ? 'text-green-400 bg-green-900/20'
+                           : 'text-red-400 bg-red-900/20'
+                     }`}
+                  >
+                     {message}
+                  </div>
+               )}
                <Link
                   className="text-sm text-gray-400 hover:text-gray-300"
                   href="/"
