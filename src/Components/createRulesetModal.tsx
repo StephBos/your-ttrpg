@@ -23,7 +23,7 @@ export default function CreateRulesetModal({
       createdAt: new Date().toLocaleDateString(),
       description: '',
       game: '',
-      url: ''
+      slug: '',
    })
    const selectMessage = 'Select Game'
 
@@ -36,7 +36,7 @@ export default function CreateRulesetModal({
       formData.append('description', ruleset.description)
       formData.append('game', ruleset.game)
       formData.append('createdAt', ruleset.createdAt)
-      formData.append('url', ruleset.url)
+      formData.append('slug', ruleset.slug)
 
       if (ruleset.backgroundImage) {
          formData.append('backgroundImage', ruleset.backgroundImage)
@@ -45,15 +45,14 @@ export default function CreateRulesetModal({
       try {
          const response = await fetch('http://localhost:3000/rulesets', {
             method: 'POST',
-            body: formData
+            body: formData,
          })
-         
+
          if (response.ok) {
             //router.push()
-         }else {
+         } else {
             console.error('Failed to save ruleset:', response.statusText)
          }
-
       } catch (error) {
          console.error('Error saving ruleset:', error)
       }
@@ -97,7 +96,14 @@ export default function CreateRulesetModal({
                   placeholder="Title"
                   onChange={(e) =>
                      //add title and generate url from title
-                     setRuleset({ ...ruleset, title: e.target.value, url: e.target.value.trim().toLowerCase().replace(/\s+/g, '')})
+                     setRuleset({
+                        ...ruleset,
+                        title: e.target.value,
+                        slug: e.target.value
+                           .trim()
+                           .toLowerCase()
+                           .replace(/\s+/g, '-'),
+                     })
                   }
                />
 

@@ -52,10 +52,13 @@ export default function UserPage() {
                   return (
                      <RulesetCard
                         key={ruleset.id}
+                        id={ruleset.id}
                         title={ruleset.title}
                         description={ruleset.description}
                         game={ruleset.game}
                         backgroundImageUrl={ruleset.background_image_url}
+                        slug={ruleset.slug}
+                        username={username}
                      />
                   )
                })}
