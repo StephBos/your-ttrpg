@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import { Metal_Mania } from 'next/font/google'
 import DragNDropFileUpload from './dropNDropFileUpload'
@@ -5,6 +6,7 @@ import { Ruleset } from '@/types/ruleset'
 import { useParams } from 'next/navigation'
 import Dropdown from './dropdown'
 import { Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface CreateRulesetModalProps {
    onClose: () => void
@@ -15,6 +17,7 @@ const metalMania = Metal_Mania({ subsets: ['latin'], weight: '400' })
 export default function CreateRulesetModal({
    onClose,
 }: CreateRulesetModalProps) {
+   const router = useRouter()
    const { username } = useParams()
    const [ruleset, setRuleset] = useState<Ruleset>({
       username: username as string,
@@ -48,8 +51,10 @@ export default function CreateRulesetModal({
             body: formData,
          })
 
+         const data = await response.json()
+
          if (response.ok) {
-            //router.push()
+            router.push(`/${username}/${ruleset.slug}-${data.id}`)
          } else {
             console.error('Failed to save ruleset:', response.statusText)
          }
@@ -95,14 +100,13 @@ export default function CreateRulesetModal({
                   className="bg-stone-700 rounded p-2 w-full placeholder-amber-100/50 text-amber-100"
                   placeholder="Title"
                   onChange={(e) =>
-                     //add title and generate url from title
                      setRuleset({
                         ...ruleset,
                         title: e.target.value,
                         slug: e.target.value
                            .trim()
                            .toLowerCase()
-                           .replace(/\s+/g, '-'),
+                           .replace(/\s+/g, ''),
                      })
                   }
                />

@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export default function Header({ username }: HeaderProps) {
    return (
-      <div className="fixed flex items-center top-0 right-0 w-full h-20 bg-[#395144]">
+      <div className="fixed flex items-center top-0 right-0 w-full z-11 h-20 bg-[#395144]">
          <h1 className={`ml-5 text-3xl text-amber-200 ${metalMania.className}`}>
             Your TTRPG
          </h1>

@@ -1,21 +1,17 @@
-export default function RulesetPage({
-  params,
-}: {
-  params: { username: string; ruleset: string }
-}) {
-  const { ruleset } = params
+import RulesetClient from "./RulesetClient";
 
-  // Split the slug and id
-  const lastDashIndex = ruleset.lastIndexOf("-")
-  const slug = ruleset.substring(0, lastDashIndex)
-  const id = ruleset.substring(lastDashIndex + 1)
+export default async function RulesetPage({ params }) {
+  const { username, ruleset } = await params; // ✅ required in Next 15
 
-  console.log({ slug, id })
+  const lastDashIndex = ruleset.lastIndexOf("-");
+  const slug = ruleset.substring(0, lastDashIndex);
+  const id = ruleset.substring(lastDashIndex + 1);
 
   return (
-    <div>
-      <h1>Ruleset: {slug}</h1>
-      <p>ID: {id}</p>
-    </div>
-  )
+    <RulesetClient
+      username={username}
+      slug={slug}
+      id={id}
+    />
+  );
 }
