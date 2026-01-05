@@ -5,8 +5,9 @@ import DragNDropFileUpload from './dropNDropFileUpload'
 import { Ruleset } from '@/types/ruleset'
 import { useParams } from 'next/navigation'
 import Dropdown from './dropdown'
-import { Trash } from 'lucide-react'
+import FilePreview from './FilePreview'
 import { useRouter } from 'next/navigation'
+import SwordsX from './SwordsX'
 
 interface CreateRulesetModalProps {
    onClose: () => void
@@ -22,12 +23,12 @@ export default function CreateRulesetModal({
    const [ruleset, setRuleset] = useState<Ruleset>({
       username: username as string,
       title: '',
-      backgroundImage: null,
       createdAt: new Date().toLocaleDateString(),
       description: '',
       game: '',
       slug: '',
    })
+   const [backgroundImage, setBackgroundImage] = useState<File | null>(null)
    const selectMessage = 'Select Game'
 
    async function handleSave() {
@@ -41,8 +42,8 @@ export default function CreateRulesetModal({
       formData.append('createdAt', ruleset.createdAt)
       formData.append('slug', ruleset.slug)
 
-      if (ruleset.backgroundImage) {
-         formData.append('backgroundImage', ruleset.backgroundImage)
+      if (backgroundImage) {
+         formData.append('backgroundImage', backgroundImage)
       }
 
       try {
@@ -64,7 +65,7 @@ export default function CreateRulesetModal({
    }
 
    function handleFileUpload(files: File[]) {
-      setRuleset({ ...ruleset, backgroundImage: files[0] })
+      setBackgroundImage(files[0])
    }
 
    function handleSelect(selected: string | string[]) {
@@ -85,12 +86,7 @@ export default function CreateRulesetModal({
             </h1>
 
             {/* Close Button */}
-            <button
-               onClick={onClose}
-               className="absolute top-2 right-2 text-stone-950 hover:text-black text-2xl cursor-pointer"
-            >
-               ✕
-            </button>
+            <SwordsX onClose={onClose} />
 
             {/* Form */}
             <form className="flex flex-col items-start gap-2 w-full text-left">
@@ -111,20 +107,11 @@ export default function CreateRulesetModal({
                   }
                />
 
-               {ruleset.backgroundImage ? (
-                  <div className="relative w-full">
-                     <img
-                        className="w-full h-30 object-cover rounded"
-                        src={URL.createObjectURL(ruleset.backgroundImage)}
-                        alt="Background Preview"
-                     />
-                     <Trash
-                        className="absolute top-2 right-2 text-stone-950 hover:text-black text-2xl cursor-pointer"
-                        onClick={() =>
-                           setRuleset({ ...ruleset, backgroundImage: null })
-                        }
-                     />
-                  </div>
+               {backgroundImage ? (
+                  <FilePreview
+                     file={backgroundImage}
+                     setFile={setBackgroundImage}
+                  />
                ) : (
                   <DragNDropFileUpload
                      fileTypes="image/*"
@@ -146,7 +133,7 @@ export default function CreateRulesetModal({
                ></textarea>
 
                <Dropdown
-                  options={['DND5e']}
+                  options={['DND5e2024']}
                   onSelect={handleSelect}
                   selectMessage={selectMessage}
                />

@@ -33,7 +33,6 @@ export default function UserPage() {
       fetchRulesets()
    }, [username])
 
-
    return (
       <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative overflow-hidden">
          <Background />
@@ -47,21 +46,19 @@ export default function UserPage() {
                Your TTRPG Rulesets
             </h1>
 
-            <div className="w-full flex flex-row gap-4 mb-12">
-               {rulesets.map((ruleset: any) => {
-                  return (
-                     <RulesetCard
-                        key={ruleset.id}
-                        id={ruleset.id}
-                        title={ruleset.title}
-                        description={ruleset.description}
-                        game={ruleset.game}
-                        backgroundImageUrl={ruleset.background_image_url}
-                        slug={ruleset.slug}
-                        username={username}
-                     />
-                  )
-               })}
+            <div className="w-full grid grid-cols-3 gap-4 mb-12">
+               {rulesets.map((ruleset: any) => (
+                  <RulesetCard
+                     key={ruleset.id}
+                     id={ruleset.id}
+                     title={ruleset.title}
+                     description={ruleset.description}
+                     game={ruleset.game}
+                     backgroundImageUrl={ruleset.background_image_url}
+                     slug={ruleset.slug}
+                     username={username}
+                  />
+               ))}
 
                <FantasyPlusButton
                   onClick={() => setModalOpen(true)}

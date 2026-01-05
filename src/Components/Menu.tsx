@@ -22,6 +22,7 @@ export default function Menu({ onAddNew, onUploadFile }) {
          <SectionDropdownButton sectionName={'Spells'} />
          <SectionDropdownButton sectionName={'Items'} />
          <SectionDropdownButton sectionName={'Equipment'} />
+         <SectionDropdownButton sectionName={'Monsters'} />
       </div>
    )
 }
