@@ -18,7 +18,7 @@ export default function RulesetClient({ username, slug, id }) {
         onAddNew={() => setNewItemModalOpen(true)}
         onUploadFile={() => setUploadModalOpen(true)}
       />
-      {isUploadModalOpen && <UploadFileModal onClose={() => setUploadModalOpen(false)} />}
+      {isUploadModalOpen && <UploadFileModal onClose={() => setUploadModalOpen(false)} user={username} />}
       {isNewItemModalOpen && <AddNewModal onClose={() => setNewItemModalOpen(false)} />}
     </div>
   );

@@ -4,10 +4,11 @@ import DragNDropFileUpload from './dropNDropFileUpload'
 import AddNewButton from './AddNewButton'
 import SwordsX from './SwordsX'
 import FilePreview from './FilePreview'
+import FileOptions from './FileOptions'
 
 const pirataOne = Pirata_One({ subsets: ['latin'], weight: '400' })
 
-export default function UploadFileModal({ onClose }) {
+export default function UploadFileModal({ onClose, user }) {
    const [file, setFile] = React.useState<File | null>(null)
    const [buttonDisabled, setButtonDisabled] = React.useState(true)
 
@@ -29,6 +30,7 @@ export default function UploadFileModal({ onClose }) {
    function handleUpload() {
       console.log('Uploading file:', file)
       const formData = new FormData()
+      formData.append('username', user)
       if (file) {
          formData.append('file', file)
       }
@@ -43,7 +45,7 @@ export default function UploadFileModal({ onClose }) {
 
    return (
       <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-20">
-         <div className="bg-[#395144] p-6 rounded relative z-10 flex flex-col items-center gap-6 w-100">
+         <div className="bg-[#395144] p-6 rounded relative z-10 flex flex-col items-center gap-6 w-auto">
             <h2
                className={`text-4xl text-amber-200 font-bold ${pirataOne.className}`}
             >
@@ -52,7 +54,10 @@ export default function UploadFileModal({ onClose }) {
             <SwordsX onClose={onClose} />
 
             {file ? (
-               <FilePreview file={file} setFile={setFile} />
+               <>
+                  <FilePreview file={file} setFile={setFile} />
+                  <FileOptions file={file} />
+               </>
             ) : (
                <DragNDropFileUpload fileTypes="" onFileUpload={handleFile} />
             )}
