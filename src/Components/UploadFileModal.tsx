@@ -34,6 +34,9 @@ const ENTITY_TYPES: { label: string; type: EntityType }[] = [
 export default function UploadFileModal({ onClose, user }) {
    const [file, setFile] = React.useState<File | null>(null)
    const [buttonDisabled, setButtonDisabled] = React.useState(true)
+   const [selectedEntities, setSelectedEntities] = React.useState<EntityType[]>(
+      []
+   )
 
    useEffect(() => {
       if (file) {
@@ -54,10 +57,11 @@ export default function UploadFileModal({ onClose, user }) {
       console.log('Uploading file:', file)
       const formData = new FormData()
       formData.append('username', user)
+      formData.append('selectedEntities', JSON.stringify(selectedEntities))
       if (file) {
          formData.append('file', file)
       }
-
+      console.log('formData:', selectedEntities)
       const response = fetch('http://localhost:3000/rulesets/file', {
          method: 'POST',
          body: formData,
@@ -74,14 +78,7 @@ export default function UploadFileModal({ onClose, user }) {
             </h2>
             <SwordsX onClose={onClose} />
 
-            {file ? (
-               <>
-                  <FilePreview file={file} setFile={setFile} />
-                  <FileOptions file={file} />
-               </>
-            ) : (
-               <DragNDropFileUpload fileTypes="" onFileUpload={handleFile} />
-            )}
+            <DragNDropFileUpload fileTypes="" onFileUpload={handleFile} />
 
             <div className="flex flex-col items-left gap-6 w-full">
                <h4
@@ -94,6 +91,21 @@ export default function UploadFileModal({ onClose, user }) {
                      <label className="inline-flex items-center gap-2 px-3 py-2 bg-amber-200/70 rounded-md shadow-sm cursor-pointer hover:bg-amber-400 transition">
                         <input
                            type="checkbox"
+                           checked={selectedEntities.includes(entity.type)}
+                           onChange={(e) => {
+                              if (e.target.checked) {
+                                 setSelectedEntities([
+                                    ...selectedEntities,
+                                    entity.type,
+                                 ])
+                              } else {
+                                 setSelectedEntities(
+                                    selectedEntities.filter(
+                                       (t) => t !== entity.type
+                                    )
+                                 )
+                              }
+                           }}
                            className="h-4 w-4 accent-amber-500"
                         />
                         <span className="text-[#4E6C50] text-sm">
